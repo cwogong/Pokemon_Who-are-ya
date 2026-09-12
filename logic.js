@@ -4,14 +4,71 @@ let attempts = 0;
 let gameOver = false;
 
 function init() {
-    setNewTarget();
     setupAutocomplete(); 
 }
 
-function setNewTarget() {
-    target = pokemonDB[Math.floor(Math.random() * pokemonDB.length)];
+// 그리드 카드 클릭 시 색상 및 선택 상태 토글
+function toggleGen(cardElement) {
+    cardElement.classList.toggle('selected');
+}
+
+// 전체 선택 / 해제
+function selectAllGens(selectState) {
+    const cards = document.querySelectorAll('.gen-card');
+    cards.forEach(card => {
+        if (selectState) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+    });
+}
+
+// 선택된 세대 번호 배열 반환
+function getFilteredDB() {
+    const selectedCards = document.querySelectorAll('.gen-card.selected');
+    const checkedGens = Array.from(selectedCards).map(card => parseInt(card.getAttribute('data-gen')));
+    
+    if (checkedGens.length === 0) {
+        return [];
+    }
+    return pokemonDB.filter(p => checkedGens.includes(p.gen));
+}
+
+function startGame() {
+    const filteredDB = getFilteredDB();
+    
+    if (filteredDB.length === 0) {
+        alert('최소 1개 이상의 세대를 선택해야 합니다!');
+        return;
+    }
+
+    document.getElementById('setupArea').style.display = 'none';
+    document.getElementById('gameArea').style.display = 'block';
+
+    attempts = 0;
+    gameOver = false;
+    document.getElementById('message').innerHTML = ''; 
+    document.getElementById('guessInput').value = '';
+    document.getElementById('mysteryQuestion').style.display = 'block';
+    document.getElementById('mysteryImage').style.display = 'none';
+
+    const board = document.getElementById('gameBoard');
+    const rows = board.querySelectorAll('.grid-row');
+    rows.forEach(row => row.remove());
+
+    setNewTarget(filteredDB);
+}
+
+function setNewTarget(filteredDB) {
+    target = filteredDB[Math.floor(Math.random() * filteredDB.length)];
     console.log("정답 힌트:", target.name); 
     document.getElementById('mysteryImage').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${target.id}.png`;
+}
+
+function restartGame() {
+    document.getElementById('gameArea').style.display = 'none';
+    document.getElementById('setupArea').style.display = 'flex';
 }
 
 function setupAutocomplete() {
@@ -23,8 +80,8 @@ function setupAutocomplete() {
         if (!val) { return false; }
         
         const list = document.getElementById('autocomplete-list');
-        
-        const filtered = pokemonDB.filter(p => p.name.includes(val));
+        const filteredDB = getFilteredDB();
+        const filtered = filteredDB.filter(p => p.name.includes(val));
         
         filtered.forEach(p => {
             const item = document.createElement('div');
@@ -48,38 +105,21 @@ document.addEventListener('click', function (e) {
     }
 });
 
-function restartGame() {
-    attempts = 0;
-    gameOver = false;
-    
-    document.getElementById('message').innerHTML = ''; 
-    document.getElementById('guessInput').value = '';
-    document.getElementById('mysteryQuestion').style.display = 'block';
-    document.getElementById('mysteryImage').style.display = 'none';
-
-    const board = document.getElementById('gameBoard');
-    const rows = board.querySelectorAll('.grid-row');
-    rows.forEach(row => row.remove());
-
-    setNewTarget();
-}
-
 function revealTarget() {
     document.getElementById('mysteryQuestion').style.display = 'none';
     document.getElementById('mysteryImage').style.display = 'block';
 }
 
-// 새롭게 추가된 포기하기 기능
 function giveUp() {
-    if (gameOver) return; // 이미 끝난 게임이면 무시
+    if (gameOver) return; 
     
     gameOver = true;
-    closeAllLists(); // 열려있는 자동완성 리스트 닫기
+    closeAllLists(); 
     
     document.getElementById('message').innerHTML = `아쉽네요! 도전을 포기하셨습니다.<br>정답은 <strong>'${target.name}'</strong> 였습니다. 😭`;
-    document.getElementById('message').style.color = '#d32f2f'; // 빨간색 텍스트
+    document.getElementById('message').style.color = '#d32f2f'; 
     
-    revealTarget(); // 정답 사진 즉시 공개
+    revealTarget(); 
 }
 
 function makeGuess() {

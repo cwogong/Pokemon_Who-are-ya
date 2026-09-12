@@ -9,6 +9,51 @@
         h1 { color: #ffcb05; text-shadow: 2px 2px 4px #3b4cca; margin-bottom: 10px; }
         .game-container { max-width: 950px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         
+        /* 세대 선택 3x3 그리드 스타일 */
+        .gen-filter-container {
+            background: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 8px;
+            margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        .gen-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 450px;
+        }
+        /* 세대 선택 칸 기본 스타일 (체크 해제 상태) */
+        .gen-card {
+            background-color: #e0e0e0;
+            color: #787c7e;
+            border: 2px solid #ccc;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        /* 세대 선택 칸 활성화 스타일 (체크된 상태) */
+        .gen-card.selected {
+            background-color: #6aaa64;
+            color: white;
+            border-color: #538d4e;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .gen-card:hover {
+            opacity: 0.9;
+        }
+
+        .gen-controls { width: 100%; margin-top: 5px; display: flex; justify-content: center; gap: 8px; align-items: center; }
+        .gen-btn { padding: 6px 14px; font-size: 13px; background-color: #607d8b; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .gen-btn:hover { background-color: #455a64; }
+        
+        .btn-start-game { background-color: #4caf50; font-weight: bold; }
+        .btn-start-game:hover { background-color: #388e3c; }
+
+        #gameArea { display: none; }
+
         .mystery-container {
             width: 120px; height: 120px; margin: 0 auto 10px; background-color: #e0e0e0; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-size: 60px; font-weight: bold;
@@ -16,7 +61,6 @@
         }
         #mysteryImage { width: 100%; height: 100%; object-fit: contain; background-color: white; }
 
-        /* 메시지가 위로 올라오면서 아래 여백(margin-bottom)을 주도록 수정했습니다 */
         #message { margin-bottom: 20px; font-weight: bold; font-size: 18px; color: #d32f2f; line-height: 1.5; min-height: 27px; }
         .rank-text { font-size: 24px; color: #3b4cca; }
 
@@ -31,18 +75,14 @@
             background-color: white; border-radius: 0 0 5px 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             text-align: left;
         }
-        .autocomplete-items div {
-            padding: 10px; cursor: pointer; border-bottom: 1px solid #d4d4d4; font-size: 14px; color: #333;
-        }
+        .autocomplete-items div { padding: 10px; cursor: pointer; border-bottom: 1px solid #d4d4d4; font-size: 14px; color: #333; }
         .autocomplete-items div:hover { background-color: #e9e9e9; }
         
         button { padding: 10px 20px; height: 40.5px; font-size: 16px; color: white; border: none; border-radius: 5px; cursor: pointer; }
         .btn-submit { background-color: #3b4cca; }
         .btn-submit:hover { background-color: #2a3b96; }
-        
         .btn-giveup { background-color: #607d8b; }
         .btn-giveup:hover { background-color: #455a64; }
-
         .btn-restart { background-color: #f44336; }
         .btn-restart:hover { background-color: #d32f2f; }
         
@@ -73,33 +113,58 @@
 <div class="game-container">
     <h1>포켓몬 Who are ya?</h1>
     
-    <div class="mystery-container">
-        <div id="mysteryQuestion">?</div>
-        <img id="mysteryImage" src="" alt="정답 포켓몬" style="display: none;">
-    </div>
-
-    <!-- 맨 아래에 있던 메시지 태그를 여기(사진 바로 밑)로 옮겼습니다! -->
-    <div id="message"></div>
-
-    <div class="input-area">
-        <div class="autocomplete-container">
-            <input type="text" id="guessInput" placeholder="포켓몬 이름 입력..." autocomplete="off">
-            <div id="autocomplete-list" class="autocomplete-items"></div>
+    <!-- 3x3 그리드 세대 선택 영역 -->
+    <div class="gen-filter-container" id="setupArea">
+        <span style="font-size: 15px; font-weight: bold; margin-bottom: 5px;">📌 플레이할 세대 선택 (클릭하여 켜기/끄기)</span>
+        
+        <div class="gen-grid">
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="1">1세대</div>
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="2">2세대</div>
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="3">3세대</div>
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="4">4세대</div>
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="5">5세대</div>
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="6">6세대</div>
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="7">7세대</div>
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="8">8세대</div>
+            <div class="gen-card selected" onclick="toggleGen(this)" data-gen="9">9세대</div>
         </div>
-        <button onclick="makeGuess()" class="btn-submit">도전!</button>
-        <button onclick="giveUp()" class="btn-giveup">🏳️ 포기하기</button>
-        <button onclick="restartGame()" class="btn-restart">🔄 다시 하기</button>
+
+        <div class="gen-controls">
+            <button type="button" class="gen-btn" onclick="selectAllGens(true)">전체 선택</button>
+            <button type="button" class="gen-btn" onclick="selectAllGens(false)">전체 해제</button>
+            <button type="button" class="gen-btn btn-start-game" onclick="startGame()">🚀 플레이 시작!</button>
+        </div>
     </div>
-    
-    <div id="gameBoard">
-        <div class="grid-header">
-            <div>사진</div>
-            <div>이름</div>
-            <div>타입</div>
-            <div>세대</div>
-            <div>진화단계</div>
-            <div>키(m)</div>
-            <div>몸무게(kg)</div>
+
+    <!-- 본 게임 영역 -->
+    <div id="gameArea">
+        <div class="mystery-container">
+            <div id="mysteryQuestion">?</div>
+            <img id="mysteryImage" src="" alt="정답 포켓몬" style="display: none;">
+        </div>
+
+        <div id="message"></div>
+
+        <div class="input-area">
+            <div class="autocomplete-container">
+                <input type="text" id="guessInput" placeholder="포켓몬 이름 입력..." autocomplete="off">
+                <div id="autocomplete-list" class="autocomplete-items"></div>
+            </div>
+            <button onclick="makeGuess()" class="btn-submit">도전!</button>
+            <button onclick="giveUp()" class="btn-giveup">🏳️ 포기하기</button>
+            <button onclick="restartGame()" class="btn-restart">🔄 세대 재선택</button>
+        </div>
+        
+        <div id="gameBoard">
+            <div class="grid-header">
+                <div>사진</div>
+                <div>이름</div>
+                <div>타입</div>
+                <div>세대</div>
+                <div>진화단계</div>
+                <div>키(m)</div>
+                <div>몸무게(kg)</div>
+            </div>
         </div>
     </div>
     
