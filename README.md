@@ -28,4 +28,4 @@
 별도의 설치 과정 없이 웹 브라우저만 있으면 바로 실행할 수 있습니다.
 
 * GitHub Pages 링크를 통해 모바일이나 PC 환경 어디서든 접속할 수 있습니다.
-* [포켓몬 Who are ya? 게임하러 가기](https://cwogong.github.io/Pokemon_Who-are-ya/)
+* <a href="https://cwogong.github.io/Pokemon_Who-are-ya/" target="_blank">포켓몬 Who are ya? 게임하러 가기</a>
