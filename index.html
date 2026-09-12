@@ -10,15 +10,18 @@
         .game-container { max-width: 950px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         
         .mystery-container {
-            width: 120px; height: 120px; margin: 0 auto 20px; background-color: #e0e0e0; border-radius: 50%;
+            width: 120px; height: 120px; margin: 0 auto 10px; background-color: #e0e0e0; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-size: 60px; font-weight: bold;
             color: #787c7e; box-shadow: 0 4px 8px rgba(0,0,0,0.2); overflow: hidden; border: 4px solid #3b4cca;
         }
         #mysteryImage { width: 100%; height: 100%; object-fit: contain; background-color: white; }
 
+        /* 메시지가 위로 올라오면서 아래 여백(margin-bottom)을 주도록 수정했습니다 */
+        #message { margin-bottom: 20px; font-weight: bold; font-size: 18px; color: #d32f2f; line-height: 1.5; min-height: 27px; }
+        .rank-text { font-size: 24px; color: #3b4cca; }
+
         .input-area { margin-bottom: 20px; display: flex; justify-content: center; align-items: flex-start; gap: 5px; }
         
-        /* 커스텀 자동완성 컨테이너 */
         .autocomplete-container { position: relative; display: inline-block; }
         input[type="text"] { padding: 10px; width: 200px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
         
@@ -33,7 +36,6 @@
         }
         .autocomplete-items div:hover { background-color: #e9e9e9; }
         
-        /* 버튼 공통 스타일 및 개별 색상 */
         button { padding: 10px 20px; height: 40.5px; font-size: 16px; color: white; border: none; border-radius: 5px; cursor: pointer; }
         .btn-submit { background-color: #3b4cca; }
         .btn-submit:hover { background-color: #2a3b96; }
@@ -64,9 +66,6 @@
         
         .arrow-up { color: #ff5252; font-weight: 900; font-size: 18px; margin-left: 4px; }
         .arrow-down { color: #448aff; font-weight: 900; font-size: 18px; margin-left: 4px; }
-
-        #message { margin-top: 20px; font-weight: bold; font-size: 18px; color: #d32f2f; line-height: 1.5; }
-        .rank-text { font-size: 24px; color: #3b4cca; }
     </style>
 </head>
 <body>
@@ -79,13 +78,15 @@
         <img id="mysteryImage" src="" alt="정답 포켓몬" style="display: none;">
     </div>
 
+    <!-- 맨 아래에 있던 메시지 태그를 여기(사진 바로 밑)로 옮겼습니다! -->
+    <div id="message"></div>
+
     <div class="input-area">
         <div class="autocomplete-container">
             <input type="text" id="guessInput" placeholder="포켓몬 이름 입력..." autocomplete="off">
             <div id="autocomplete-list" class="autocomplete-items"></div>
         </div>
         <button onclick="makeGuess()" class="btn-submit">도전!</button>
-        <!-- 포기하기 버튼 추가 -->
         <button onclick="giveUp()" class="btn-giveup">🏳️ 포기하기</button>
         <button onclick="restartGame()" class="btn-restart">🔄 다시 하기</button>
     </div>
@@ -102,7 +103,6 @@
         </div>
     </div>
     
-    <div id="message"></div>
 </div>
 
 <script src="database.js"></script>
